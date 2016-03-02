@@ -1,6 +1,6 @@
 /**
  * angular-data-table - A feature-rich but lightweight ES6 AngularJS Data Table crafted for large data sets!
- * @version v0.4.15
+ * @version v0.4.16
  * @link http://swimlane.com/
  * @license 
  */
@@ -872,19 +872,13 @@
             }
 
             if (this.options.paging.externalPaging) {
-              var idxs = this.getFirstLastIndexes(),
-                  idx = idxs.first;
-
-              this.tempRows.splice(0, this.tempRows.length);
-              while (idx < idxs.last) {
-                this.tempRows.push(rows[idx++]);
-              }
+              this.tempRows = rows;
             } else {
-              var _tempRows;
+                var _tempRows;
 
-              this.tempRows.splice(0, this.tempRows.length);
-              (_tempRows = this.tempRows).push.apply(_tempRows, babelHelpers.toConsumableArray(rows));
-            }
+                this.tempRows.splice(0, this.tempRows.length);
+                (_tempRows = this.tempRows).push.apply(_tempRows, babelHelpers.toConsumableArray(rows));
+              }
           }
         }
       }
@@ -965,11 +959,13 @@
               row.$$depth = 0;
             } else {
               var parent = this.index[row[parentProp]];
-              row.$$depth = parent.$$depth + 1;
-              if (parent.$$children) {
-                parent.$$children.push(row[prop]);
-              } else {
-                parent.$$children = [row[prop]];
+              if (parent) {
+                row.$$depth = parent.$$depth + 1;
+                if (parent.$$children) {
+                  parent.$$children.push(row[prop]);
+                } else {
+                  parent.$$children = [row[prop]];
+                }
               }
             }
           }
